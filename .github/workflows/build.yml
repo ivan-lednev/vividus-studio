@@ -1,0 +1,30 @@
+name: Vividus Studio
+
+on: push
+
+jobs:
+  extension-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Install nodejs 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      
+      - name: Cache node_modules
+        uses: uarlouski/cache@v2
+        with:
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+          path: ./node_modules
+
+      - name: Install node_modules
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Do failure
+        run: vividus
